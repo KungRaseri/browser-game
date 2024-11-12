@@ -12,7 +12,7 @@
 	shadow="shadow-md"
 >
 	<svelte:fragment slot="lead">
-		<div class="btn-group rounded-none variant-filled-secondary text-secondary-50-900-token">
+		<div class="btn-group rounded-none">
 			<a
 				href="/game"
 				class="btn btn-sm rounded-none hover:bg-primary-hover-token hover:text-primary-50-900-token"
@@ -41,32 +41,37 @@
 	</svelte:fragment>
 
 	<svelte:fragment slot="trail">
-		<div class="btn-group rounded-none variant-filled-secondary text-secondary-50-900-token">
+		<div class="btn-group rounded-none">
 			<a
 				href="/game/profile"
 				class="btn btn-sm rounded-none hover:bg-primary-hover-token hover:text-primary-50-900-token"
-				>Profile</a
 			>
+				Profile
+			</a>
 			<a
 				href="/game/history"
 				class="btn btn-sm rounded-none hover:bg-primary-hover-token hover:text-primary-50-900-token"
-				>History</a
 			>
+				History
+			</a>
 			<a
 				href="/game/messages"
 				class="btn btn-sm rounded-none hover:bg-primary-hover-token hover:text-primary-50-900-token"
-				>Messages</a
 			>
+				Messages
+			</a>
 			<a
-				href="/game/guild"
+				href="/game/federation"
 				class="btn btn-sm rounded-none hover:bg-primary-hover-token hover:text-primary-50-900-token"
-				>Guild Forum</a
 			>
+				Federation Forum
+			</a>
 			<a
-				href="/game/guild"
+				href="/game/federation"
 				class="btn btn-sm rounded-none hover:bg-primary-hover-token hover:text-primary-50-900-token"
-				>Guild</a
 			>
+				Federation
+			</a>
 		</div>
 	</svelte:fragment>
 </AppBar>

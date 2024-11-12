@@ -1,44 +1,57 @@
 import { redirect, type Handle, type HandleServerError } from "@sveltejs/kit";
+import { getContext } from "svelte";
+import type { Configuration } from "$lib/stores/system/configuration";
+
 import { AuthenticateUser } from "$lib/auth";
-import * as Sentry from '@sentry/node';
-import { BrowserTracing } from '@sentry/browser';
+import { db } from "$lib/db";
 
-Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    integrations: [new BrowserTracing()],
-    tracesSampleRate: 1.0,
-    environment: process.env.NODE_ENV
-})
-
+let IsDatabaseInitialized = false;
 export const handle: Handle = (async ({ event, resolve }) => {
-    const user = await AuthenticateUser(event.cookies);
+    // does database exist?
+    // if (!event.route.id?.includes('(protected)/admin/init'))
+    //     try {
+    //         await db.$queryRaw<number>`SELECT 1`;
+    //         IsDatabaseInitialized = true;
+    //     }
+    //     catch (e) {
+    //         throw redirect(307, `/admin/init`);
+    //     }
 
-    if (!user) {
-        if (event.route.id?.includes('(protected)'))
-            throw redirect(307, `/sign-in?redirectTo=${event.url.pathname}`)
+    // if not, start initialization process
+    // redirect to
+    IsDatabaseInitialized = true;
 
-    } else {
-        if (user && user.role !== "ADMINISTRATOR" && event.route.id?.includes('(protected)/admin'))
-            throw redirect(307, `/sign-in?redirectTo=${event.url.pathname}`)
+    //if so, continue is usual...
+    if (IsDatabaseInitialized) {
+        const user = await AuthenticateUser(event.cookies);
 
-        event.locals.account = user;
+        if (!user) {
+            if (event.route.id?.includes('(protected)'))
+                redirect(307, `/sign-in?redirectTo=${event.url.pathname}`);
+
+        } else {
+            if (user && user.role !== "ADMINISTRATOR" && event.route.id?.includes('(protected)/admin'))
+                redirect(307, `/sign-in?redirectTo=${event.url.pathname}`);
+
+            event.locals.account = user;
+        }
     }
 
-
     const response = await resolve(event);
+
     return response
 }) satisfies Handle
 
 export const handleError: HandleServerError = (async ({ error, event }) => {
     const errorId = crypto.randomUUID();
 
-    Sentry.withScope(async (scope) => {
-        scope.setTag("errorId", errorId)
-        Sentry.captureException(error);
-    })
-
-    return {
+    const errorResponse = {
         message: `${event.url.search} at ${event.url.pathname} failed.`,
+        error,
         errorId
     };
+
+    console.log(errorResponse);
+
+    return errorResponse;
 }) satisfies HandleServerError;

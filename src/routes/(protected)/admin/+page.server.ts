@@ -1,5 +1,8 @@
+import { db } from "$lib/db"
 import type { PageServerLoad } from "./$types"
 
 export const load: PageServerLoad = async () => {
-    return {}
+    return {
+        servers: await db.server.findMany()
+    }
 }

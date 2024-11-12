@@ -162,3 +162,82 @@ ALTER TABLE "SettlementStructure" ADD CONSTRAINT "SettlementStructure_settlement
 
 -- AddForeignKey
 ALTER TABLE "StructureModifier" ADD CONSTRAINT "StructureModifier_settlementStructureId_fkey" FOREIGN KEY ("settlementStructureId") REFERENCES "SettlementStructure"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+/*
+  Warnings:
+
+  - You are about to drop the column `settlementStorageId` on the `Settlement` table. All the data in the column will be lost.
+  - You are about to drop the column `description` on the `SettlementStructure` table. All the data in the column will be lost.
+  - You are about to drop the column `name` on the `SettlementStructure` table. All the data in the column will be lost.
+  - You are about to drop the column `structureRequirementsId` on the `SettlementStructure` table. All the data in the column will be lost.
+  - You are about to drop the `SettlementStorage` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the `StructureModifier` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the `StructureRequirements` table. If the table is not empty, all the data it contains will be lost.
+  - The required column `id` was added to the `ProfileServerData` table with a prisma-level default value. This is not possible if the table is not empty. Please add this column as optional, then populate it before making it required.
+  - Added the required column `level` to the `SettlementStructure` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `structureId` to the `SettlementStructure` table without a default value. This is not possible if the table is not empty.
+
+*/
+-- DropForeignKey
+ALTER TABLE "Settlement" DROP CONSTRAINT "Settlement_settlementStorageId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "SettlementStructure" DROP CONSTRAINT "SettlementStructure_settlementId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "SettlementStructure" DROP CONSTRAINT "SettlementStructure_structureRequirementsId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "StructureModifier" DROP CONSTRAINT "StructureModifier_settlementStructureId_fkey";
+
+-- DropIndex
+DROP INDEX "Settlement_settlementStorageId_key";
+
+-- DropIndex
+DROP INDEX "SettlementStructure_structureRequirementsId_key";
+
+-- AlterTable
+ALTER TABLE "ProfileServerData" ADD COLUMN     "id" TEXT NOT NULL,
+ADD CONSTRAINT "ProfileServerData_pkey" PRIMARY KEY ("id");
+
+-- AlterTable
+ALTER TABLE "Settlement" DROP COLUMN "settlementStorageId",
+ALTER COLUMN "name" SET DEFAULT 'Home Settlement';
+
+-- AlterTable
+ALTER TABLE "SettlementStructure" DROP COLUMN "description",
+DROP COLUMN "name",
+DROP COLUMN "structureRequirementsId",
+ADD COLUMN     "level" INTEGER NOT NULL,
+ADD COLUMN     "structureId" TEXT NOT NULL;
+
+-- DropTable
+DROP TABLE "SettlementStorage";
+
+-- DropTable
+DROP TABLE "StructureModifier";
+
+-- DropTable
+DROP TABLE "StructureRequirements";
+
+-- CreateTable
+CREATE TABLE "Structure" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+
+    CONSTRAINT "Structure_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "SettlementStructure" ADD CONSTRAINT "SettlementStructure_settlementId_fkey" FOREIGN KEY ("settlementId") REFERENCES "Settlement"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SettlementStructure" ADD CONSTRAINT "SettlementStructure_structureId_fkey" FOREIGN KEY ("structureId") REFERENCES "Structure"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AlterTable
+ALTER TABLE "Biome" ADD COLUMN     "plotAreaRange" INTEGER[] DEFAULT ARRAY[30, 50]::INTEGER[],
+ADD COLUMN     "plotsRange" INTEGER[] DEFAULT ARRAY[1, 10]::INTEGER[],
+ADD COLUMN     "precipitationRange" INTEGER[] DEFAULT ARRAY[0, 450]::INTEGER[],
+ADD COLUMN     "temperatureRange" INTEGER[] DEFAULT ARRAY[-10, 32]::INTEGER[];

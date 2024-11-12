@@ -1,45 +1,44 @@
-import { fail } from "@sveltejs/kit"
 import { db } from "$lib/db"
 import type { PageServerLoad, Actions, Action } from "./$types"
 import { TileType } from "@prisma/client";
 
 export const load: PageServerLoad = async ({ params }) => {
-    const world = await db.world.findUnique({
-        where: {
-            id: params.id
-        },
-        include: {
-            regions: {
-                orderBy: {
-                    name: 'asc'
-                },
-                include: {
-                    tiles: {
-                        include: {
-                            Plots: {
-                                include: {
-                                    Settlement: true
-                                }
-                            },
-                            Biome: true
-                        }
+    const [world, regions, tiles, plots, biomes] = await db.$transaction([
+        db.world.findUnique({
+            where: {
+                id: params.id
+            }
+        }),
+        db.region.findMany({
+            where: {
+                worldId: params.id
+            }
+        }),
+        db.tile.findMany({
+            where: {
+                Region: {
+                    worldId: params.id
+                }
+            }
+        }),
+        db.plot.findMany({
+            where: {
+                Tile: {
+                    Region: {
+                        worldId: params.id
                     }
                 }
-            },
-            server: true
-        }
-    });
-
-    if (!world) {
-        throw fail(404, { success: false, id: params.id })
-    }
+            }
+        }),
+        db.biome.findMany()
+    ]);
 
     const [landTiles, oceanTiles, settlements] = await db.$transaction([
         db.tile.count({
             where: {
                 type: TileType.LAND,
                 Region: {
-                    worldId: world.id
+                    worldId: params.id
                 }
             }
         }),
@@ -47,7 +46,7 @@ export const load: PageServerLoad = async ({ params }) => {
             where: {
                 type: TileType.OCEAN,
                 Region: {
-                    worldId: world.id
+                    worldId: params.id
                 }
             }
         }),
@@ -56,7 +55,7 @@ export const load: PageServerLoad = async ({ params }) => {
                 Plot: {
                     Tile: {
                         Region: {
-                            worldId: world.id
+                            worldId: params.id
                         }
                     }
                 },
@@ -66,6 +65,10 @@ export const load: PageServerLoad = async ({ params }) => {
 
     return {
         world,
+        regions,
+        biomes,
+        tiles,
+        plots,
         worldInfo: {
             landTiles,
             oceanTiles,
@@ -74,17 +77,4 @@ export const load: PageServerLoad = async ({ params }) => {
     }
 }
 
-const generateWorld: Action = async ({ request }) => {
-    const data = await request.formData();
-    const regionMax = data.get('regionMax');
-    const tilesPerRegion = data.get('tilesPerRegion');
-
-    if (typeof regionMax !== 'string' ||
-        !regionMax ||
-        typeof tilesPerRegion !== 'string' ||
-        !tilesPerRegion) {
-        return fail(400, { invalid: true })
-    }
-}
-
-export const actions: Actions = { generateWorld }
+export const actions: Actions = {}

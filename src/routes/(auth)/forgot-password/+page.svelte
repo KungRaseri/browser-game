@@ -1,5 +1,6 @@
 <script lang="ts">
-	import Information from 'svelte-material-icons/Information.svelte';
+	import Information from 'svelte-material-icons-generator/svelte-material-icons/Information.svelte';
+	import LockQuestion from 'svelte-material-icons-generator/svelte-material-icons/LockQuestion.svelte';
 
 	import type { ActionData } from './$types';
 	import { applyAction, enhance } from '$app/forms';
@@ -10,19 +11,13 @@
 	export let form: ActionData;
 </script>
 
-<div class="mx-auto w-full md:w-96 mt-2 lg:mt-5 bg-surface-700">
-	<div class="mx-auto w-full px-5 py-3">
-		<div class="flex">
-			<img
-				class="w-10 py-5 mr-2"
-				src="logo.png"
-				alt="Workflow"
-			/>
-			<h1 class="mt-6 text-xl lg:text-3xl tracking-tight font-bold text-primary-50">
-				Forgot your password?
-			</h1>
-		</div>
+<div class="card m-5 p-4 max-w-xl mx-auto">
+	<div class="flex">
+		<LockQuestion size={48} />
+		<h1 class="h1">Forgot your password?</h1>
+	</div>
 
+	<section class="p-4">
 		<form
 			action="?/resetPassword"
 			method="POST"
@@ -34,23 +29,12 @@
 				};
 			}}
 		>
-			<div>
-				<label for="email" class="block text-md font-medium text-primary-50"> Email address </label>
-				<div class="mt-1">
-					<input
-						id="email"
-						name="email"
-						type="email"
-						autocomplete="email"
-						required
-						class="rounded-sm"
-					/>
-				</div>
-			</div>
+			<label for="email" class="label"> Email address </label>
+			<input id="email" name="email" type="email" autocomplete="email" required class="input" />
 
 			<div class="space-y-1">
 				{#if form?.invalid}
-					<div transition:slide>
+					<div transition:slide|global>
 						<div class="alert variant-ghost-error mx-5 mt-5">
 							<div class="alert-message text-primary-50">
 								<Information size={24} />
@@ -59,8 +43,8 @@
 						</div>
 					</div>
 				{/if}
+				<button class="w-full p-2 btn btn-base variant-ghost-primary">Reset Password</button>
 			</div>
-			<button class="w-full p-2 btn btn-base variant-ghost-primary">Reset Password</button>
 		</form>
-	</div>
+	</section>
 </div>

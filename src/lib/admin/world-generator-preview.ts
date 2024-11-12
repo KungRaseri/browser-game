@@ -1,3 +1,4 @@
+import { generateMap } from "$lib/game/world-generator";
 import type { Prisma } from "@prisma/client";
 
 export async function generatePreview() {

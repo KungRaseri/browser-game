@@ -3,23 +3,23 @@ import type { ServerLoad } from "@sveltejs/kit";
 const mainMenuLinks = [
 	{
 		name: 'Home',
-		route: '/',
-		isActive: false
+		href: '/',
 	},
 	{
-		name: 'Forum',
-		route: '/forum',
-		isActive: false,
+		name: 'Wiki',
+		href: '/wiki'
+	},
+	{
+		name: 'Forums',
+		href: '/forums',
 	},
 	{
 		name: 'Game',
-		route: '/game',
-		isActive: false
+		href: '/game',
 	},
 	{
 		name: 'Admin',
-		route: '/admin',
-		isActive: false,
+		href: '/admin',
 		requiredRole: "ADMINISTRATOR"
 	}
 ];
@@ -27,41 +27,16 @@ const mainMenuLinks = [
 const userMenuLinks = [
 	{
 		name: 'Account',
-		route: '/account',
-		isActive: false
+		href: '/account',
 	},
 	{
 		name: 'Admin',
-		route: '/admin',
-		isActive: false,
+		href: '/admin',
 		requiredRole: "ADMINISTRATOR"
 	}
 ];
 
-export const load: ServerLoad = async function ({ locals, route }) {
-	mainMenuLinks.forEach(async (link) => {
-		if (route.id === '/' && link.route === '/') {
-			link.isActive = true
-			return;
-		}
-
-		if (link.route !== '/' && route.id?.includes(link.route)) {
-			link.isActive = true
-			return;
-		}
-
-		link.isActive = false
-	});
-
-	userMenuLinks.forEach(async (link) => {
-		if (link.route !== '/' && route.id?.includes(link.route)) {
-			link.isActive = true;
-			return;
-		}
-
-		link.isActive = false;
-	});
-
+export const load: ServerLoad = async function ({ locals }) {
 	return {
 		account: locals.account,
 		mainMenuLinks: mainMenuLinks,

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Prisma, Tile } from '@prisma/client';
-	import ElevationRise from 'svelte-material-icons/ElevationRise.svelte';
-	import Earth from 'svelte-material-icons/Earth.svelte';
-	import WeatherPouring from 'svelte-material-icons/WeatherPouring.svelte';
-	import ThermometerLines from 'svelte-material-icons/ThermometerLines.svelte';
+	import ElevationRise from 'svelte-material-icons-generator/svelte-material-icons/ElevationRise.svelte';
+	import Earth from 'svelte-material-icons-generator/svelte-material-icons/Earth.svelte';
+	import WeatherPouring from 'svelte-material-icons-generator/svelte-material-icons/WeatherPouring.svelte';
+	import ThermometerLines from 'svelte-material-icons-generator/svelte-material-icons/ThermometerLines.svelte';
 
 	export let tile: Prisma.TileGetPayload<{ include: { Biome: true } }>;
 </script>

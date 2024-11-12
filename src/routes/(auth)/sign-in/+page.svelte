@@ -1,5 +1,6 @@
 <script lang="ts">
-	import Information from 'svelte-material-icons/Information.svelte';
+	import Information from 'svelte-material-icons-generator/svelte-material-icons/Information.svelte';
+	import LoginVariant from 'svelte-material-icons-generator/svelte-material-icons/LoginVariant.svelte';
 
 	import type { ActionData, PageData } from './$types';
 	import { applyAction, enhance } from '$app/forms';
@@ -14,11 +15,9 @@
 
 <div class="mx-auto w-full md:w-96 mt-2 lg:mt-5 bg-surface-200-700-token">
 	<div class="mx-auto w-full px-5 py-3">
-		<div class="flex">
-			<img class="w-20 py-5 mr-2" src="logo.png" alt="Workflow" />
-			<h1 class="mt-6 text-2xl tracking-tight font-bold text-token">
-				Sign into your account
-			</h1>
+		<div class="flex my-5 space-x-3">
+			<LoginVariant size={36} />
+			<h1 class="text-2xl tracking-tight font-bold text-token">Sign into your account</h1>
 		</div>
 
 		<form
@@ -63,16 +62,16 @@
 						name="remember_me"
 						type="checkbox"
 						class="checkbox"
-						bind:value={isRememberMeChecked}
+						bind:checked={isRememberMeChecked}
 					/>
 					<span class="">Remember me</span>
 				</label>
 
-				<a href="forgot-password" class="font-medium">Forgot your password?</a>
+				<a href="forgot-password" class="anchor font-medium">Forgot your password?</a>
 			</div>
 
 			{#if form?.email}
-				<div transition:slide class="hidden lg:block">
+				<div transition:slide|global class="hidden lg:block">
 					<div class="alert variant-ghost-error mx-5 mt-5">
 						<div class="alert-message text-token justify-center items-center">
 							<Information size={24} />

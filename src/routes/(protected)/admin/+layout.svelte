@@ -8,7 +8,7 @@
 	<title>Administration | Uncharted Lands</title>
 </svelte:head>
 
-<AppShell>
+<AppShell slotPageContent="overflow-scroll">
 	<svelte:fragment slot="sidebarLeft">
 		<Navigation />
 	</svelte:fragment>

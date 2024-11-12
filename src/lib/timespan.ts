@@ -9,7 +9,6 @@ const MILLISECONDS_IN_AN_HOUR = MILLISECONDS_IN_A_MINUTE * MINUTES_IN_AN_HOUR;
 const MILLISECONDS_IN_A_DAY = MILLISECONDS_IN_AN_HOUR * HOURS_IN_A_DAY;
 const MILLISECONDS_IN_A_WEEK = MILLISECONDS_IN_A_DAY * DAYS_IN_A_WEEK;
 
-
 export class TimeSpan {
     static Subtract(date1: number, date2: number) {
         const milliSeconds: number = date1 - date2;
@@ -64,6 +63,7 @@ export class TimeSpan {
     get days(): number {
         return this._days;
     }
+
     set days(value: number) {
         if (isNaN(value)) {
             value = 0;
@@ -75,6 +75,7 @@ export class TimeSpan {
     get hours(): number {
         return this._hours;
     }
+
     set hours(value: number) {
         if (isNaN(value)) {
             value = 0;
@@ -86,6 +87,7 @@ export class TimeSpan {
     get minutes(): number {
         return this._minutes;
     }
+
     set minutes(value: number) {
         if (isNaN(value)) {
             value = 0;
@@ -97,6 +99,7 @@ export class TimeSpan {
     get seconds(): number {
         return this._seconds;
     }
+
     set seconds(value: number) {
         this._seconds = value;
         this.calcMilliSeconds();
@@ -105,6 +108,7 @@ export class TimeSpan {
     get milliseconds(): number {
         return this._milliseconds;
     }
+
     set milliseconds(value: number) {
         if (isNaN(value)) {
             value = 0;
@@ -129,16 +133,11 @@ export class TimeSpan {
         return Math.floor(this._totalMilliSeconds / MILLISECONDS_IN_AN_HOUR);
     }
 
-
-
     floorValue(origValue: number, maxValue: number) {
         return { modulo: origValue % maxValue, addition: Math.floor(origValue / maxValue) };
     }
 
-
-
     calcMilliSeconds() {
-
         const newMilliSecond = this.floorValue(this._milliseconds, MILLISECONDS_IN_A_SECOND);
         this._milliseconds = newMilliSecond.modulo;
         this._seconds += newMilliSecond.addition;
@@ -158,7 +157,4 @@ export class TimeSpan {
         this._totalMilliSeconds = this.days * MILLISECONDS_IN_A_DAY + this.hours * MILLISECONDS_IN_AN_HOUR + this.minutes * MILLISECONDS_IN_A_MINUTE
             + this.seconds * MILLISECONDS_IN_A_SECOND + this.milliseconds;
     }
-
-
-
 }

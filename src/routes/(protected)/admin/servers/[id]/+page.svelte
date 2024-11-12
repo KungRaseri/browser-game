@@ -39,7 +39,7 @@
 	</div>
 
 	<!-- players -->
-	<div class="p-4 grid grid-cols-6">
+	<!-- <div class="p-4 grid grid-cols-6">
 		{#each data.server.players as player}
 			<div class="card p-4">
 				<div class="p-4">
@@ -54,5 +54,5 @@
 				<hr class="m-2" />
 			</div>
 		{/each}
-	</div>
+	</div> -->
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Github from 'svelte-material-icons/Github.svelte';
+	import Github from 'svelte-material-icons-generator/svelte-material-icons/Github.svelte';
 </script>
 
 <footer class="hidden sm:block p-5 space-y-3 justify-center items-center bg-surface-100-800-token">

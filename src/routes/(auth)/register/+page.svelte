@@ -1,5 +1,6 @@
 <script lang="ts">
-	import Information from 'svelte-material-icons/Information.svelte';
+	import Information from 'svelte-material-icons-generator/svelte-material-icons/Information.svelte';
+	import AccountPlus from 'svelte-material-icons-generator/svelte-material-icons/AccountPlus.svelte';
 
 	import type { ActionData } from './$types';
 	import { applyAction, enhance } from '$app/forms';
@@ -12,15 +13,9 @@
 
 <div class="mx-auto w-full md:w-96 mt-2 lg:mt-5 bg-surface-200-700-token rounded-md">
 	<div class="mx-auto w-full px-5 py-3">
-		<div class="flex">
-			<img
-				class="w-10 py-5 mr-2"
-				src="logo.png"
-				alt="Workflow"
-			/>
-			<h1 class="mt-6 text-xl lg:text-2xl tracking-tight font-bold text-token">
-				Register your account
-			</h1>
+		<div class="flex my-5 space-x-3">
+			<AccountPlus size={36} />
+			<h1 class="text-2xl tracking-tight font-bold text-token">Register your account</h1>
 		</div>
 
 		<form
@@ -59,7 +54,7 @@
 			</label>
 
 			{#if form?.invalid}
-				<div transition:slide>
+				<div transition:slide|global>
 					<div class="alert variant-ghost-error mx-5 mt-5">
 						<div class="alert-message text-token">
 							<Information size={24} />

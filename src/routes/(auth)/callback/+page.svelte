@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Discord from 'svelte-material-icons/Discord.svelte';
-	import Github from 'svelte-material-icons/Github.svelte';
-	import Google from 'svelte-material-icons/Google.svelte';
+	import Discord from 'svelte-material-icons-generator/svelte-material-icons/Discord.svelte';
+	import Github from 'svelte-material-icons-generator/svelte-material-icons/Github.svelte';
+	import Google from 'svelte-material-icons-generator/svelte-material-icons/Google.svelte';
 	import house from '$lib/images/house-foggy-bg.jpg';
 </script>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Prisma } from '@prisma/client';
+	import type { Region, Tile, Biome, Plot, Prisma } from '@prisma/client';
 	import TileComponent from './Tile.svelte';
 
 	export let region: Prisma.RegionGetPayload<{
@@ -12,8 +12,11 @@
 			};
 		};
 	}>;
+	export let biomes: Biome[];
 </script>
 
-{#each region.tiles as tile}
-	<TileComponent {tile} />
-{/each}
+<div class="grid grid-cols-10">
+	{#each region.tiles as tile}
+		<TileComponent {tile} {biomes} />
+	{/each}
+</div>

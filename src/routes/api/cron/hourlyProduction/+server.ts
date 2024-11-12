@@ -4,16 +4,12 @@ import type { RequestHandler } from '@sveltejs/kit';
 export const GET: RequestHandler = async () => {
     const settlements = await db.settlement.findMany({
         include: {
-            Plot: true,
-            Storage: true,
-            Structures: true
+            Plot: true
         }
     })
+
     for (const settlement of settlements) {
-        await db.settlementStorage.update({
-            where: {
-                id: settlement.settlementStorageId
-            },
+        await db.resources.update({
             data: {
                 food: {
                     increment: settlement.Plot.food
@@ -30,8 +26,11 @@ export const GET: RequestHandler = async () => {
                 ore: {
                     increment: settlement.Plot.ore
                 }
+            },
+            where: {
+                id: settlement.resourcesId
             }
-        })
+        });
     }
 
     return new Response("ok");

@@ -3,7 +3,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import type { ActionData } from './$types';
 
-	import Information from 'svelte-material-icons/Information.svelte';
+	import Information from 'svelte-material-icons-generator/svelte-material-icons/Information.svelte';
 
 	export let form: ActionData;
 </script>

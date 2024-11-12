@@ -10,7 +10,9 @@ export const load = (async ({ locals }) => {
             },
         },
         include: {
-            Storage: true
+            Plot: true,
+            Resources: true,
+            Structures: true
         }
     })
 

@@ -1,0 +1,13 @@
+---
+title: Uncharted Lands - Wiki
+
+---
+
+<script>
+</script>
+
+# {title}
+
+<style scoped>
+
+</style>

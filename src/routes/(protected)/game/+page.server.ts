@@ -4,7 +4,7 @@ import type { PageServerLoad } from "./$types"
 
 export const load: PageServerLoad = async ({ locals }) => {
     if (!locals.account.profile) {
-        throw redirect(302, '/game/getting-started')
+        redirect(302, '/game/getting-started');
     }
 
     const settlements = await db.settlement.findMany({
@@ -21,12 +21,8 @@ export const load: PageServerLoad = async ({ locals }) => {
                     Tile: true
                 }
             },
-            Storage: true,
-            Structures: {
-                include: {
-                    modifiers: true
-                }
-            }
+            Resources: true,
+            Structures: true,
         }
     })
 

@@ -1,57 +1,55 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { createDataTableStore, dataTableHandler, tableInteraction } from '@skeletonlabs/skeleton';
+	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
 
 	export let data: PageData;
 
-	let plotsTableStore = createDataTableStore(data.plots, {
-		search: '',
-		sort: '',
-		pagination: {
-			offset: 0,
-			limit: 15,
-			size: 0,
-			amounts: [5, 15, 25]
-		}
+	let plotsDataHandler = new DataHandler(data.plots, {
+		rowsPerPage: 20
 	});
 
-	plotsTableStore.subscribe((model) => dataTableHandler(model));
-
-	$: plotsTableStore.updateSource(data.plots);
+	const plots = plotsDataHandler.getRows();
 </script>
 
-<div class="m-1">
-	<h1 id="plots-header">Plots</h1>
-	<div class="table-container">
-		<div class="p-0 m-3 w-11/12 flex space-x-3">
-			<input
-				bind:value={$plotsTableStore.search}
-				type="search"
-				placeholder="Search..."
-				class="input"
-			/>
-		</div>
-		<table aria-describedby="plots-header" class="table table-hover" use:tableInteraction>
+<div class="grid grid-cols-2 p-4">
+	<h1>Plots</h1>
+</div>
+<hr class="mx-2" />
+<section class="p-4">
+	<Datatable handler={plotsDataHandler}>
+		<table aria-describedby="plots-header" class="table table-hover">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Settlement ID</th>
-					<th>Tile ID</th>
-					<th>Resources</th>
+					<Th handler={plotsDataHandler} orderBy="id">ID</Th>
+					<Th handler={plotsDataHandler} orderBy="tileId">Tile ID</Th>
+					<Th handler={plotsDataHandler} orderBy="area">Area</Th>
+					<Th handler={plotsDataHandler} orderBy="solar">Solar</Th>
+					<Th handler={plotsDataHandler} orderBy="wind">Wind</Th>
+					<Th handler={plotsDataHandler} orderBy="food">Food</Th>
+					<Th handler={plotsDataHandler} orderBy="water">Water</Th>
+					<Th handler={plotsDataHandler} orderBy="wood">Wood</Th>
+					<Th handler={plotsDataHandler} orderBy="stone">Stone</Th>
+					<Th handler={plotsDataHandler} orderBy="ore">Ore</Th>
 				</tr>
 			</thead>
 			<tbody>
-				{#if $plotsTableStore}
-					{#each $plotsTableStore.filtered as plot, index}
+				{#if $plots}
+					{#each $plots as plot}
 						<tr>
 							<td><a href="/admin/plots/{plot.id}">{plot.id}</a></td>
-							<td>{plot.Settlement?.id}</td>
 							<td>{plot.tileId}</td>
 							<td>{plot.area}</td>
+							<td>{plot.solar}</td>
+							<td>{plot.wind}</td>
+							<td>{plot.food}</td>
+							<td>{plot.water}</td>
+							<td>{plot.wood}</td>
+							<td>{plot.stone}</td>
+							<td>{plot.ore}</td>
 						</tr>
 					{/each}
 				{/if}
 			</tbody>
 		</table>
-	</div>
-</div>
+	</Datatable>
+</section>

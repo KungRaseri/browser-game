@@ -3,7 +3,7 @@ import { db } from "$lib/db"
 
 export const load: PageServerLoad = async () => {
     return {
-        servers: db.server.findMany({
+        servers: await db.server.findMany({
             include: {
                 worlds: {
                     include: {

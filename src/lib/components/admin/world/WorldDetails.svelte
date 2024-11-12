@@ -1,13 +1,11 @@
 <script lang="ts">
-	import type { Prisma } from '@prisma/client';
-	import World from '$lib/components/game/map/World.svelte';
+	import type { Prisma, World, Region, Tile, Plot } from '@prisma/client';
+	import WorldComponent from '$lib/components/game/map/World.svelte';
 
-	export let world: Prisma.WorldGetPayload<{
-		include: {
-			regions: true;
-			server: true;
-		};
-	}>;
+	export let world: World;
+	export let regions: Region[];
+	export let tiles: Tile[];
+	export let plots: Plot[];
 
 	export let worldInfo: { landTiles: number; oceanTiles: number; settlements: number };
 </script>
@@ -35,8 +33,8 @@
 
 		<hr class="m-2" />
 
-		{#if world.regions}
-			<World regions={world.regions} />
+		{#if regions}
+			<WorldComponent regions={world.regions} />
 		{/if}
 	</section>
 </div>

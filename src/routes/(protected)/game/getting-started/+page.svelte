@@ -1,77 +1,159 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 
-	import Campfire from 'svelte-material-icons/Campfire.svelte';
+	import Campfire from 'svelte-material-icons-generator/svelte-material-icons/Campfire.svelte';
+	import Information from 'svelte-material-icons-generator/svelte-material-icons/Information.svelte';
 
 	import { applyAction, enhance } from '$app/forms';
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { Step, Stepper } from '@skeletonlabs/skeleton';
+	import type { Profile, Server, World } from '@prisma/client';
 
-	let selectedServer: string, selectedWorld: string, username: string;
+	import type { ErrorResponse } from '$lib/types';
+	let errorResponse: ErrorResponse;
+
 	export let data: PageData;
+
+	let selectedServer: Server;
+	let selectedWorld: World;
+	let profile: Profile = {
+		id: '',
+		accountId: data.account.id,
+		picture: '',
+		username: ''
+	};
+
+	async function onCompleteHandler(e: Event): Promise<void> {
+		const formData = new FormData();
+		formData.set('server', new Blob([JSON.stringify(selectedServer)]));
+		formData.set('world', new Blob([JSON.stringify(selectedWorld)]));
+		formData.set('profile', new Blob([JSON.stringify(profile)]));
+
+		const response = await fetch('/api/game/settle', {
+			method: 'POST',
+			body: formData
+		});
+
+		if (response) {
+			const data = await response.json();
+			console.log(data)
+			if (data.result) {
+				await goto('/game');
+			}
+
+			if (typeof data === typeof errorResponse) {
+				console.log('test');
+			}
+		}
+	}
+
+	function onStepHandler(e: Event): void {
+		console.log('event:step', e);
+	}
+
+	function onNextHandler(e: Event): void {
+		console.log('event:next', e);
+	}
+
+	function onBackHandler(e: Event): void {
+		console.log('event:back', e);
+	}
 </script>
 
-<div class="bg-surface-200-700-token mt-10 p-5 w-full md:w-1/2 mx-auto">
-	<form
-		action="?/settle"
-		method="POST"
-		use:enhance={() => {
-			return async ({ result }) => {
-				invalidateAll();
-
-				applyAction(result);
-			};
-		}}
-	>
-		<div class="space-y-6">
-			<div>
-				<h3 class="text-lg font-medium leading-6">Choose Server and World</h3>
-				<p class="mt-1 text-sm">Let's choose the server and world you'd like to start in.</p>
-			</div>
-
-			<div class="flex text-center">
-				<div class="flex-row">
-					<select id="server" name="server" class="rounded-md" bind:value={selectedServer}>
-						{#each data.servers as server}
-							<option value={server.id}>{server.name}</option>
-						{/each}
-					</select>
+<div class="w-full h-full p-5 space-y-5">
+	<div class="card p-3 rounded-md space-y-3">
+		<h1 class="h1">Getting Started</h1>
+		<hr class="my-1" />
+		<Stepper
+			buttonNext="variant-ghost-primary"
+			buttonComplete="variant-ghost-secondary"
+			on:complete={onCompleteHandler}
+			on:next={onNextHandler}
+			on:step={onStepHandler}
+			on:back={onBackHandler}
+		>
+			<Step locked={!selectedServer}>
+				<svelte:fragment slot="header">
+					<h2 class="h2">Server</h2>
+				</svelte:fragment>
+				<div class="flex flex-col space-y-3">
+					<label for="server" class="label">
+						<select id="server" name="server" class="select" bind:value={selectedServer}>
+							{#each data.servers as server, i}
+								<option value={server}> {server.name} [{server.id}]</option>
+							{/each}
+						</select>
+					</label>
 				</div>
-				<div class="flex-row">
-					<select id="world" name="world" class="rounded-md" bind:value={selectedWorld}>
-						{#each data.worlds.filter((w) => w.serverId === selectedServer) as world, i}
-							<option value={world.id}>{world.name}</option>
-						{/each}
-					</select>
+			</Step>
+			<Step locked={!selectedWorld}>
+				<svelte:fragment slot="header">
+					<h2 class="h2">World</h2>
+				</svelte:fragment>
+				<div class="flex flex-col space-y-3">
+					<label for="world" class="label">
+						<select id="world" name="world" class="select" bind:value={selectedWorld}>
+							{#each data.worlds as world, i}
+								<option value={world}> {world.name} [{world.id}]</option>
+							{/each}
+						</select>
+					</label>
 				</div>
-				<div class="mx-1 py-3 text-xs">
-					{selectedServer ?? ''}
-				</div>
-				<div class="mx-1 py-3 text-xs">
-					{selectedWorld ?? ''}
-				</div>
-			</div>
-			<div>
-				<h3 class="text-lg font-medium leading-6">Choose Username</h3>
-			</div>
+			</Step>
 
-			<div class="mt-6 gap-y-6 gap-x-4 sm:grid-cols-6">
-				<input id="username" type="text" name="username" class="input" bind:value={username} />
-			</div>
-		</div>
+			<Step locked={!profile.username}>
+				<svelte:fragment slot="header">
+					<h2 class="h2">Profile</h2>
+				</svelte:fragment>
+				<div class="flex flex-col space-y-3">
+					<input type="hidden" id="account-id" name="account-id" bind:value={data.account.id} />
+					<label for="profile-username" class="label">
+						<span>Username</span>
+						<input
+							type="text"
+							id="profile-username"
+							name="profile-username"
+							class="input"
+							bind:value={profile.username}
+						/>
+					</label>
+				</div>
+			</Step>
 
-		<div class="pt-5">
-			<div class="flex justify-end">
-				<button
-					disabled={!selectedWorld || !username}
-					type="submit"
-					class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-				>
-					<div class="mx-1 my-0.5">
-						<Campfire />
+			<Step>
+				<svelte:fragment slot="header">
+					<h2 class="h2">Preview</h2>
+				</svelte:fragment>
+
+				{#if errorResponse?.invalid}
+					<div class="alert variant-ghost-error w-11/12 mx-auto m-5">
+						<div class="alert-message"><Information />{errorResponse.message}</div>
 					</div>
-					Settle in this World
-				</button>
-			</div>
-		</div>
-	</form>
+				{/if}
+
+				<section class="card">
+					<h3 class="card-header">General</h3>
+					<div class="p-4">
+						<ul>
+							<li>Server ID: {selectedServer.name} [{selectedServer.id}]</li>
+							<li>World ID: {selectedWorld.name} [{selectedWorld.id}]</li>
+						</ul>
+						<section class="card m-1">
+							<h4 class="card-header">Profile</h4>
+							<div class="p-4">
+								<ul>
+									<li>
+										Account ID: {data.account.id}
+									</li>
+									<li>
+										Username: {profile.username}
+									</li>
+								</ul>
+							</div>
+						</section>
+					</div>
+				</section>
+			</Step>
+		</Stepper>
+	</div>
 </div>

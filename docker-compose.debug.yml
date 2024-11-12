@@ -3,27 +3,31 @@
 version: '3.4'
 
 services:
-  api:
-    image: browsergame-api
-    ports:
-      - 5036:5036
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5036
-    volumes:
-      - ~/.vsdbg:/remote_debugger:rw
+  # api:
+  #   image: browsergame-api
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Production
+  #     - ASPNETCORE_URLS=http://+:80
   client:
-    image: browsergame-client
+    container_name: unchartedlands
+    image: unchartedlands
+    env_file: .env
     ports:
-      - 80:80
-      - 443:443
+      - 4000:3000
     environment:
-      - ENVIRONMENT=Development
-  cache:
-    image: redis
+      ENVIRONMENT: Development
+    depends_on:
+      - postgres
+  # cache:
+  #   image: redis
+  #   ports:
+  #     - '6379:6379'
+  postgres:
+    image: postgres
+    restart: always
     ports:
-      - '6379:6379'
-  db:
-    image: mongo
-    ports:
-      - '27017:27017'
+      - 6543:5432
+    environment:
+      POSTGRES_USER: postgres # The PostgreSQL user (useful to connect to the database)
+      POSTGRES_PASSWORD: 1234 # The PostgreSQL password (useful to connect to the database)
+      POSTGRES_DB: unchartedlands # The PostgreSQL default database (automatically created at first launch)

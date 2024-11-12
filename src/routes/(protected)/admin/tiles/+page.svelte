@@ -1,59 +1,47 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { createDataTableStore, dataTableHandler, tableInteraction } from '@skeletonlabs/skeleton';
+	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
+
+	import ServerPlus from 'svelte-material-icons-generator/svelte-material-icons/ServerPlus.svelte';
+	import ServerNetwork from 'svelte-material-icons-generator/svelte-material-icons/ServerNetwork.svelte';
 
 	export let data: PageData;
 
-	let tilesTableStore = createDataTableStore(data.tiles, {
-		search: '',
-		sort: '',
-		pagination: {
-			offset: 0,
-			limit: 15,
-			size: 0,
-			amounts: [5, 15, 25]
-		}
-	});
-
-	tilesTableStore.subscribe((model) => dataTableHandler(model));
-
-	$: tilesTableStore.updateSource(data.tiles);
+	const tilesDataHandler = new DataHandler(data.tiles, { rowsPerPage: 10 });
+	const tiles = tilesDataHandler.getRows();
 </script>
 
-<div class="m-1">
-	<h1 id="tiles-header">Tiles</h1>
-	<div class="table-container">
-		<div class="p-0 m-3 w-11/12 flex space-x-3">
-			<input
-				bind:value={$tilesTableStore.search}
-				type="search"
-				placeholder="Search..."
-				class="input"
-			/>
-		</div>
-		<table aria-describedby="tiles-header" class="table table-hover" use:tableInteraction>
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Type</th>
-					<th>Elevation</th>
-					<th>Precipitation</th>
-					<th>Temperature</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#if $tilesTableStore}
-					{#each $tilesTableStore.filtered as tile, index}
-						<tr>
-							<td><a href="/admin/tiles/{tile.id}">{tile.id}</a></td>
-							<td>{tile.type}</td>
-							<td>{(tile.elevation * 100).toPrecision(3)}</td>
-							<td>{tile.precipitation.toPrecision(3)}</td>
-							<td>{tile.temperature.toPrecision(3)}</td>
-						</tr>
-					{/each}
-				{/if}
-			</tbody>
-		</table>
-	</div>
+<div class="grid grid-cols-2 p-4">
+	<h1>Tiles</h1>
 </div>
+<hr class="mx-2" />
+<section class="p-4">
+	{#if data.tiles.length}
+		<Datatable handler={tilesDataHandler}>
+			<table aria-describedby="tiles-header" class="table table-hover">
+				<thead>
+					<tr>
+						<Th handler={tilesDataHandler} orderBy="id">ID</Th>
+						<Th handler={tilesDataHandler} orderBy="Region">Region</Th>
+						<Th handler={tilesDataHandler} orderBy="type">Type</Th>
+					</tr>
+				</thead>
+				<tbody>
+					{#if $tiles}
+						{#each $tiles as tile}
+							<tr>
+								<td><a href="/admin/tiles/{tile.id}">{tile.id}</a></td>
+								<td>[{tile.Region.xCoord}, {tile.Region.yCoord}]</td>
+								<td>{tile.type}</td>
+							</tr>
+						{/each}
+					{/if}
+				</tbody>
+			</table>
+		</Datatable>
+	{:else}
+		<div class="justify-center items-center text-center">
+			<h3 class="mt-2 text-sm font-semibold text-token">No tiles</h3>
+		</div>
+	{/if}
+</section>

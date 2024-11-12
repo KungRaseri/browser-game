@@ -41,7 +41,7 @@ const createServer: Action = async ({ request }) => {
         }
     }
 
-    throw redirect(302, '/admin/servers')
+    redirect(302, '/admin/servers');
 
 }
 

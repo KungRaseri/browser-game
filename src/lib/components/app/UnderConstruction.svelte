@@ -1,5 +1,5 @@
 <script>
-	import HammerScrewdriver from 'svelte-material-icons/HammerScrewdriver.svelte';
+	import HammerScrewdriver from 'svelte-material-icons-generator/svelte-material-icons/HammerScrewdriver.svelte';
 </script>
 
 <aside class="alert bg-warning-100-800-token mx-auto w-96 mt-5">
